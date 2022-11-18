@@ -1,0 +1,17 @@
+button{
+    height: 40px;
+    margin: 10px;
+    border: none;
+    background: darkgrey;
+    padding: 10px 20px;
+    border-radius: 20px;
+    color: #fff;
+    cursor: pointer;
+    transition: background .2s ease-in-out;
+    text-align: center;
+    
+}
+
+button:hover{
+    background: grey;
+}

@@ -1,0 +1,14 @@
+.delete{
+    box-sizing: border-box;
+    position: absolute;
+    top: 0;
+    left: 0;
+    color: white;
+    background-color: black;
+    visibility: none;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+.closetimg:hover + .delete{
+    visibility: visible; opacity: 0.5;
+}
