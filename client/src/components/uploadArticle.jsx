@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import {useParams } from "react-router";
 import axios from 'axios';
 import ClosetImg from "./closetImg";
 import { useNavigate } from 'react-router-dom';
@@ -16,6 +17,8 @@ const UploadArticle = (props) => {
     const [b64Img, setB64Img] = useState();
     const [articleType, setArticleType] = useState("");
     const [articlesToAdd, setArticlesToAdd] = useState([]);
+    const { userID } = useParams();
+
 
     const encodePic = (e, file) => {
         e.preventDefault();
@@ -30,12 +33,13 @@ const UploadArticle = (props) => {
 
     const addArticle = () => {
         {articlesToAdd.map((article) => 
-        axios.post('http://localhost:8000/api/article/new',{
+        axios.post('http://localhost:8000/api/article/new/' + userID,{
             type: article.type,
-            imgURL: article.imgURL
-        })
+            imgURL: article.imgURL,
+            userID: {userID}
+        }, {withCredentials: true})
         .then(res => {console.log(res.data)
-            navigate("/Closet/4")
+            navigate("/Closet/" + userID)
         })
         .catch(err => {console.log("XXX" + err + "XXX")})
         )}
@@ -83,7 +87,7 @@ const UploadArticle = (props) => {
                 )}
             </ClosetRack>
             <BottomNav>
-                <button onClick={() => navigate('/Closet/4')}>Back to Closet</button>
+                <button onClick={() => navigate('/Closet/' + userID)}>Back to Closet</button>
                 <button onClick ={() => addArticle()}>Add to Closet</button>
             </BottomNav>
         </div>

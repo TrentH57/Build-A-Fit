@@ -2,16 +2,18 @@ const { Article } = require('../models/article.model');
 
 module.exports.createArticle = (request, response) => {
         const { type, imgURL } = request.body;
+        const userID = request.params.userID;
         Article.create({
         type,
-        imgURL
+        imgURL,
+        userID
         })
             .then(article =>response.json(article))
             .catch(err => response.status(400).json(err));
     }
 
  module.exports.getAllArticles = (request, response) => {
-        Article.find({})
+        Article.find({userID: request.params.userID})
             .then(articles => response.json(articles))
             .catch(err => response.json(err))
     }

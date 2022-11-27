@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import {useParams } from "react-router";
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import NavBar from '../components/NavBar';
@@ -8,19 +9,29 @@ import ClosetImgDiv from '../components/closetImgDiv';
 import Wrapper from '../components/wrapper';
 import "../components/componentstyles/deletebutton.css";
 import PageHead from '../components/pageHead';
+import BottomNav from '../components/bottomNav';
 
 
 const Closet = (props) => {
     const navigate = useNavigate();
     const [allArticles, setAllArticles] = useState([]);
     const [displayArticles, setDisplayArticles] = useState([]);
+    const { userID } = useParams();
 
+
+    const logout = () => {
+        axios.get("http://localhost:8000/api/users/logout", {withCredentials: true})
+        .then(navigate("/"));
+    }
 
     useEffect(() => {
-        axios.get('http://localhost:8000/api/articles')
-        .then(res => {setAllArticles(res.data)
-        })
-        .catch(err => {console.log("XXX" + err + "XXX")})
+        // axios.get('http://localhost:8000/api/users/fetchcheckeduser', {withCredentials: true})
+        // .then(res =>  {setUserID(res.data.results)})
+        // .catch(err => console.log(err))
+        // .then(console.log(userID));
+        axios.get('http://localhost:8000/api/articles/'+ userID, {withCredentials: true})
+        .then(res =>  {setAllArticles(res.data)})
+        .catch(err => {console.log("XXX" + err + "XXX" + userID)})
     },[])
 
     const deleteArticle = (articleID) => {
@@ -60,18 +71,23 @@ const Closet = (props) => {
                 <button onClick = {() => setTops()}>Tops</button>
                 <button onClick = {() => setBottoms()}>Bottoms</button>
                 <button onClick = {() => setFootWear()}>FootWear</button>
-                <button onClick = {() => navigate('/NewArticle/4')}>Add Article</button>
-                <button onClick = {() => navigate('/Home/4')}>Build Fits</button>
             </NavBar>
             <ClosetRack>
-            {displayArticles.map((article) => 
+            {displayArticles.map((article, i) => 
                 <ClosetImgDiv>
-                    <ClosetImg  onClick= {() => deleteArticle(article._id)} className = "closetimg" key = {article._id} src= {article.imgURL} alt = "cool picture"/>
+                    <ClosetImg key={i} onClick= {() => deleteArticle(article._id)} className = "closetimg" key = {article._id} src= {article.imgURL} alt = "cool picture"/>
                     <p className = "delete" >Remove From Rack</p>
                 </ClosetImgDiv>
 
             )}
             </ClosetRack>
+            <BottomNav>
+                <div>
+                    <button onClick = {() => navigate('/NewArticle/' + userID)}>Add Article</button>
+                    <button onClick = {() => navigate('/Home/' + userID)}>Build Fits</button>
+                </div>
+                <button onClick = {() => logout()}>logout</button>
+            </BottomNav>
         </Wrapper>
     )
 }

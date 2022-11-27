@@ -7,6 +7,10 @@ const ArticleSchema = new mongoose.Schema({
     imgURL: { 
         type: String,
         required: [true, "Img is required"]
+     },
+     userID: {
+     type: String,
+     required: [true, "userID is required"]
      }
 }, { timestamps: true });
 module.exports.Article = mongoose.model('Article', ArticleSchema);

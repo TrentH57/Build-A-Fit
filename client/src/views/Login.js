@@ -1,10 +1,12 @@
 import { useNavigate } from 'react-router-dom';
+import LoginForm from '../components/loginForm';
 
 
 const Login = (props) => {
     const navigate = useNavigate();
     return (
-        <button onClick = {() => navigate("/home/4")}>To Closet</button>
+        <LoginForm/>
+        // <button onClick = {() => navigate("/Closet/4")}>To Closet</button>
     )
 }
 
