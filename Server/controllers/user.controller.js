@@ -13,7 +13,7 @@ module.exports.registerUser = (req, res) => {
                 const userToken = jwt.sign({
                     id: user._id
                 }, process.env.SECRET_KEY);
-                res.cookie("userToken", userToken, process.env.SECRET_KEY,{
+                res.cookie("usertoken", userToken, process.env.SECRET_KEY,{
                     httpOnly: true
                 })
                 .json({ msg: "success!", user: user});
@@ -81,7 +81,7 @@ module.exports.getOneUser = (req, res) => {
     })
 }
 module.exports.logOut = (req, res) => {
-    res.clearCookie('userToken');
+    res.clearCookie('usertoken');
     res.sendStatus(200);
 }
 

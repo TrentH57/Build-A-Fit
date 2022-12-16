@@ -17,6 +17,7 @@ const Closet = (props) => {
     const [allArticles, setAllArticles] = useState([]);
     const [displayArticles, setDisplayArticles] = useState([]);
     const { userID } = useParams();
+    
 
 
     const logout = () => {
@@ -25,10 +26,7 @@ const Closet = (props) => {
     }
 
     useEffect(() => {
-        // axios.get('http://localhost:8000/api/users/fetchcheckeduser', {withCredentials: true})
-        // .then(res =>  {setUserID(res.data.results)})
-        // .catch(err => console.log(err))
-        // .then(console.log(userID));
+        checkLoggedIn();
         axios.get('http://localhost:8000/api/articles/'+ userID, {withCredentials: true})
         .then(res =>  {setAllArticles(res.data)})
         .catch(err => {console.log("XXX" + err + "XXX" + userID)})
@@ -40,6 +38,17 @@ const Closet = (props) => {
             removeFromDom(articleID)
         })
         .catch(err => console.error(err));
+    }
+
+    const checkLoggedIn = () => {
+        axios.get('http://localhost:8000/api/users/fetchcheckeduser', {withCredentials: true})
+        .then(res =>   {
+            if(res.data.results != userID){
+            console.log(res.data.results + " < ---- > " + userID);
+            navigate("/");
+            }
+            })
+        .catch(err => navigate("/"))
     }
 
     const setHeadWear = () => {
@@ -59,7 +68,7 @@ const Closet = (props) => {
         setDisplayArticles(FootWear)
     }
     const removeFromDom = (articleID) => {
-        setDisplayArticles(displayArticles.filter(article => article._id != articleID));
+        setDisplayArticles(displayArticles.filter(article => article._id !== articleID));
     }
     return (
         <Wrapper>
@@ -75,7 +84,7 @@ const Closet = (props) => {
             <ClosetRack>
             {displayArticles.map((article, i) => 
                 <ClosetImgDiv>
-                    <ClosetImg key={i} onClick= {() => deleteArticle(article._id)} className = "closetimg" key = {article._id} src= {article.imgURL} alt = "cool picture"/>
+                    <ClosetImg onClick= {() => deleteArticle(article._id)} className = "closetimg" key = {article._id} src= {article.imgURL} alt = {article.imgURL}/>
                     <p className = "delete" >Remove From Rack</p>
                 </ClosetImgDiv>
 

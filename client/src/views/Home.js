@@ -22,6 +22,7 @@ const Home = (props) => {
     }
 
     useEffect(() => {
+        checkLoggedIn();
         axios.get('http://localhost:8000/api/articles/' + userID, {withCredentials: true})
         .then(res => {
             let headWear =res.data.filter(article => article.type === "HeadWear")
@@ -36,6 +37,17 @@ const Home = (props) => {
         })
         .catch(err => {console.log("XXX" + err + "XXX")})
     },[userID])
+
+    const checkLoggedIn = () => {
+        axios.get('http://localhost:8000/api/users/fetchcheckeduser', {withCredentials: true})
+        .then(res =>   {
+            if(res.data.results != userID){
+            console.log(res.data.results + " < ---- > " + userID);
+            navigate("/");
+            }
+            })
+        .catch(err => navigate("/"))
+    }
 
     return (
         <Scene bgImg ={scene}>
