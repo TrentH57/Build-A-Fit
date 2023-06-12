@@ -3,6 +3,7 @@ import Home from "./views/Home";
 import Login from './views/Login';
 import Closet from './views/Closet';
 import Register from './views/Register';
+import Article from './views/Article';
 import './App.css';
 import{
   Routes,
@@ -20,6 +21,7 @@ function App() {
         <Route path = "/Home/:userID" element={<Home />} />
         <Route path = "/NewArticle/:userID" element={<NewArticle />} />
         <Route path = "/Closet/:userID" element = {<Closet />}/>
+        <Route path = "/Closet/:userID/:articleID" element = {<Article />}/>
       </Routes>
     </div>
   );

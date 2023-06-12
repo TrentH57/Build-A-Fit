@@ -1,12 +1,13 @@
 const { Article } = require('../models/article.model');
 
 module.exports.createArticle = (request, response) => {
-        const { type, imgURL } = request.body;
+        const { type, imgURL, addedToCloset } = request.body;
         const userID = request.params.userID;
         Article.create({
         type,
         imgURL,
-        userID
+        userID,
+        addedToCloset
         })
             .then(article =>response.json(article))
             .catch(err => response.status(400).json(err));
@@ -19,7 +20,7 @@ module.exports.createArticle = (request, response) => {
     }
 
 module.exports.getArticle = (request, response) => {
-    Article.findOne({_id:request.params._id})
+    Article.findOne({_id: request.params.articleID})
     .then(article => response.json(article))
     .catch(err => response.json(err))
 }
@@ -31,7 +32,7 @@ module.exports.updateArticle = (request, response) => {
 }
 
 module.exports.deleteArticle = (request, response) => {
-    Article.deleteOne({ _id: request.params._id })
+    Article.deleteOne({ _id: request.params.articleID })
         .then(deleteConfirmation => response.json(deleteConfirmation))
         .catch(err => response.json(err))
 }

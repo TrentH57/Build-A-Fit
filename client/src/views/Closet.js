@@ -28,8 +28,9 @@ const Closet = (props) => {
     useEffect(() => {
         checkLoggedIn();
         axios.get('http://localhost:8000/api/articles/'+ userID, {withCredentials: true})
-        .then(res =>  {setAllArticles(res.data)})
+        .then(res =>  {{setAllArticles(res.data)}{setDisplayArticles(res.data)}})
         .catch(err => {console.log("XXX" + err + "XXX" + userID)})
+        
     },[])
 
     const deleteArticle = (articleID) => {
@@ -43,7 +44,7 @@ const Closet = (props) => {
     const checkLoggedIn = () => {
         axios.get('http://localhost:8000/api/users/fetchcheckeduser', {withCredentials: true})
         .then(res =>   {
-            if(res.data.results != userID){
+            if(res.data.results !== userID){
             console.log(res.data.results + " < ---- > " + userID);
             navigate("/");
             }
@@ -83,8 +84,8 @@ const Closet = (props) => {
             </NavBar>
             <ClosetRack>
             {displayArticles.map((article, i) => 
-                <ClosetImgDiv>
-                    <ClosetImg onClick= {() => deleteArticle(article._id)} className = "closetimg" key = {article._id} src= {article.imgURL} alt = {article.imgURL}/>
+                <ClosetImgDiv key = {article._id}>
+                    <ClosetImg onClick= {() => navigate('/Closet/' + userID + '/' + article._id)} className = "closetimg" key = {article._id} src= {article.imgURL} alt = {article.imgURL}/>
                     <p className = "delete" >Remove From Rack</p>
                 </ClosetImgDiv>
 

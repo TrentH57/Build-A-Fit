@@ -12,50 +12,33 @@ import NavBar from "./NavBar";
 import PageHead from "./pageHead";
 
 const UploadArticle = (props) => {
+    const { userID } = useParams();
     const navigate = useNavigate();
     // const [imgURL, setImgUrl] = useState("");
-    // const [b64Img, setB64Img] = useState([]);
+    const [b64Img, setB64Img] = useState();
     const [articleType, setArticleType] = useState("");
     const [articlesToAdd, setArticlesToAdd] = useState([]);
-    const { userID } = useParams();
-    const [imgsToEncode, setImgsToEncode] = useState([]);
 
-    function encodePic(file){
-            let reader = new FileReader();
-            reader.onloadend = function () {
-                let result = (reader.result);
-                upload(result);
-            }
-            reader.readAsDataURL(file);
-            
-    }
-
-    const upload = (encodedImg) => {
-            console.log("uploading image");
-            let tempBase64 = encodedImg.slice(23); //23 is a magic number that eliminates extra charcaters in the base64 encoding that is left from the encode function. 
-            let data = {
-                key: 'e2cdf0a47902483877ad3a5b62731ab8',
-                image: tempBase64
-            }
-            axios({
-                method: 'post',
-                url: "https://api.imgbb.com/1/upload",
-                data: data,
-                headers: { "Content-Type": "multipart/form-data" }
-            })
-                .then(res => { setArticlesToAdd([...articlesToAdd, {type: articleType, imgURL: res.data.data.display_url}])
-                console.log("upload complete");
-            })
-                .catch(err => console.log("XXX" + err))
+    const encodePic = (e, file) => {
+        e.preventDefault();
+        let reader = new FileReader();
+        reader.onloadend = function () {
+            let result = (reader.result);
+            setB64Img(result);
+            console.log("set");
+        }
+        reader.readAsDataURL(file);
     }
 
     const addArticle = () => {
-        console.log(articlesToAdd);
+        let date = new Date();
+        let dateAdded = (date.getMonth()+1) + "-" + date.getDate() + "-" + date.getFullYear();
         {articlesToAdd.map((article) => 
         axios.post('http://localhost:8000/api/article/new/' + userID,{
             type: article.type,
             imgURL: article.imgURL,
-            userID: {userID}
+            userID: {userID},
+            addedToCloset: dateAdded
         }, {withCredentials: true})
         .then(res => {console.log(res.data)
             navigate("/Closet/" + userID)
@@ -64,24 +47,36 @@ const UploadArticle = (props) => {
         )}
     }
 
-    function HandleUpload(e){
+    const upload = (e) => {
+        let tempBase64 = b64Img.slice(23);
         e.preventDefault();
-        for( let img of imgsToEncode){
-            encodePic(img)
+        let data = {
+            key: 'e2cdf0a47902483877ad3a5b62731ab8',
+            image: tempBase64
         }
+        axios({
+            method: 'post',
+            url: "https://api.imgbb.com/1/upload",
+            data: data,
+            headers: { "Content-Type": "multipart/form-data" }
+        })
+            .then(res => { setArticlesToAdd([...articlesToAdd, {type: articleType, imgURL: res.data.data.display_url}])
+            console.log(articleType);
+        })
+            .catch(err => console.log("XXX" + err))
     }
 
     return (
         <div >
             <NavBar>
-                <form onSubmit={(e) => HandleUpload(e)}>
+                <form onSubmit={(e) => upload(e)}>
                     <SceneSelector onChange={(e) => setArticleType(e.target.value)}>
                         <option value="HeadWear">HeadWear</option>
                         <option value="Tops">Tops</option>
                         <option value="Bottoms">Bottoms</option>
                         <option value="FootWear">FootWear</option>
                     </SceneSelector>
-                    <input type='file' multiple onChange = {(e) =>setImgsToEncode(e.target.files)}></input>
+                    <input type='file' onChange={(e) => encodePic(e, e.target.files[0])}></input>
                     <button>Click to Upload</button>
                 </form>
             </NavBar>

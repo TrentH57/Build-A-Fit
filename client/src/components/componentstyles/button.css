@@ -7,11 +7,14 @@ button{
     border-radius: 20px;
     color: #fff;
     cursor: pointer;
-    transition: background .2s ease-in-out;
+    transition: .2s ease-in-out;
     text-align: center;
     
 }
 
 button:hover{
     background: grey;
+}
+button:active {
+    background-color: grey;
 }
